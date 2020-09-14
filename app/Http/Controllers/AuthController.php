@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
+
 class AuthController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('jwt', ['except' => ['login']]);
-    }
 
     /**
      * Get a JWT via given credentials.
@@ -22,6 +20,7 @@ class AuthController extends Controller
         }
         return $this->respondWithToken($token);
     }
+
     /**
      * Get the authenticated User.
      *
@@ -29,12 +28,9 @@ class AuthController extends Controller
      */
     public function profile()
     {
-        return response()->json(auth()->user());
+        return response()->json(new UserResource(auth()->user()));
     }
-    public function payload()
-    {
-        return response()->json(auth()->payload());
-    }
+
     /**
      * Log the user out (Invalidate the token).
      *
@@ -45,6 +41,7 @@ class AuthController extends Controller
         auth()->logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
+
     /**
      * Refresh a token.
      *
@@ -54,6 +51,7 @@ class AuthController extends Controller
     {
         return $this->respondWithToken(auth()->refresh());
     }
+
     /**
      * Get the token array structure.
      *
@@ -66,8 +64,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user(),
+            'expires_in' => auth()->factory()->getTTL() * 30,
         ]);
     }
 }

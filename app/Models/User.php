@@ -17,7 +17,8 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'email',
+        'password',
     ];
 
     /**
@@ -26,7 +27,8 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -47,6 +49,25 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
 
-   }
+    /**
+     * Get the person record associated with the user.
+     *
+     * @return object
+     */
+    public function person()
+    {
+        return $this->belongsTo('App\Models\Person');
+    }
+
+    /**
+     * Get the roles records associated with the user.
+     *
+     * @return object
+     */
+    public function roles()
+    {
+        return $this->belongsToMany('App\Models\Role');
+    }
 }
